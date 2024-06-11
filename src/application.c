@@ -1,7 +1,7 @@
 #include <application.h>
 #include <at.h>
 
-#define SEND_DATA_INTERVAL            (15 * 60 * 1000)
+#define SEND_DATA_INTERVAL             (1 * 60 * 1000)
 #define MEASURE_INTERVAL                   (30 * 1000)
 #define BATTERY_UPDATE_INTERVAL       (60 * 60 * 1000)
 
@@ -26,6 +26,10 @@ twr_button_t button;
 static twr_ds18b20_t ds18b20;
 // ds18b20 sensors array
 static twr_ds18b20_sensor_t ds18b20_sensors[DS18B20_SENSOR_COUNT];
+
+//RM pulse sensor
+static twr_button_t button_channel_a;
+uint32_t button_channel_a_count;
 
 twr_scheduler_task_id_t battery_measure_task_id;
 
@@ -111,6 +115,26 @@ void handler_ds18b20(twr_ds18b20_t *self, uint64_t device_address, twr_ds18b20_e
         twr_data_stream_feed(&sm_temperature[device_index], &value);
     } else {
         twr_data_stream_reset(&sm_temperature[device_index]);
+    }
+}
+
+void button_channel_a_event_handler(twr_button_t *self, twr_button_event_t event, void *event_param)
+{
+    if (event == TWR_BUTTON_EVENT_CLICK)
+    {
+        twr_led_pulse(&led, 100);
+
+        button_channel_a_count++;
+
+        //twr_radio_pub_uint32("push-button/a/event_count", &app.button_channel_a_count);
+        
+        twr_log_debug("button a click");
+    }
+    else if (event == TWR_BUTTON_EVENT_HOLD)
+    {
+        // twr_scheduler_plan_now(0);
+        twr_log_debug("button a HOLD ");
+        button_channel_a_count++;
     }
 }
 
@@ -204,6 +228,13 @@ void application_init(void)
         twr_data_stream_init(&sm_temperature[i], 1, &sm_temperature_buffer[i]);
     }
 
+    // RM Channel A
+    twr_module_sensor_set_mode(TWR_MODULE_SENSOR_CHANNEL_A, TWR_MODULE_SENSOR_MODE_INPUT);
+    twr_module_sensor_set_pull(TWR_MODULE_SENSOR_CHANNEL_A, TWR_MODULE_SENSOR_PULL_NONE);
+	twr_button_init(&button_channel_a, TWR_GPIO_P4, TWR_GPIO_PULL_UP, 1);
+	twr_button_set_event_handler(&button_channel_a, button_channel_a_event_handler, NULL);
+
+
     twr_radio_init(TWR_RADIO_MODE_NODE_SLEEPING);
     twr_radio_pairing_request("1wire-thermometer", FW_VERSION);
 
@@ -250,6 +281,8 @@ void application_task(void)
         }
     }
 
+    twr_radio_pub_uint32("pulse/a/event_count", &button_channel_a_count);
+    
     header = HEADER_UPDATE;
 
     twr_scheduler_plan_current_relative(SEND_DATA_INTERVAL);
