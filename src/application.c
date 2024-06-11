@@ -125,7 +125,6 @@ void button_channel_a_event_handler(twr_button_t *self, twr_button_event_t event
         twr_led_pulse(&led, 100);
 
         button_channel_a_count++;
-
         //twr_radio_pub_uint32("push-button/a/event_count", &app.button_channel_a_count);
         
         twr_log_debug("button a click");
@@ -234,9 +233,8 @@ void application_init(void)
 	twr_button_init(&button_channel_a, TWR_GPIO_P4, TWR_GPIO_PULL_UP, 1);
 	twr_button_set_event_handler(&button_channel_a, button_channel_a_event_handler, NULL);
 
-
     twr_radio_init(TWR_RADIO_MODE_NODE_SLEEPING);
-    twr_radio_pairing_request("1wire-thermometer", FW_VERSION);
+    twr_radio_pairing_request("1wire-thermometer-pulse", FW_VERSION);
 
     // Initialize AT command interface
     at_init(&led);
