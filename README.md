@@ -1,6 +1,6 @@
 <a href="https://www.hardwario.com/"><img src="https://www.hardwario.com/ci/assets/hw-logo.svg" width="200" alt="HARDWARIO Logo" align="right"></a>
 
-# Wireless Thermometer with 1-Wire DS18B20 Temperature Sensors
+# Wireless Thermometer with 1-Wire DS18B20 Temperature Sensors and Pulse Sensor
 
 [![Travis](https://img.shields.io/travis/hardwario/bcf-lora-1wire-thermometer/master.svg)](https://travis-ci.org/hardwario/bcf-lora-1wire-thermometer)
 [![Release](https://img.shields.io/github/release/hardwario/bcf-lora-1wire-thermometer.svg)](https://github.com/hardwario/bcf-lora-1wire-thermometer/releases)
@@ -19,7 +19,8 @@ If you want to get more information about Core Module, firmware and how to work 
 
 | A | GND | VCC | GND/C | B    |
 |---|-----|-----|-------|------| 
-| - | GND | VCC |   -   | DATA |
+| - | GND | VCC |   -   | DATA |  1 wire
+| * | GND |                    |  Pulse sensor - dry contact
 
 
 ### Sensor Module R1.0 - 4 pin connector
