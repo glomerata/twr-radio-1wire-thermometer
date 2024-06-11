@@ -20,7 +20,7 @@ If you want to get more information about Core Module, firmware and how to work 
 | A | GND | VCC | GND/C | B    |
 |---|-----|-----|-------|------| 
 | - | GND | VCC |   -   | DATA |  1 wire
-| * | GND |                    |  Pulse sensor - dry contact
+| * | GND |     |       |      |  Pulse sensor - dry contact
 
 
 ### Sensor Module R1.0 - 4 pin connector
